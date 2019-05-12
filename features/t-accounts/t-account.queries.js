@@ -23,3 +23,14 @@ exports.tAccountCreate = (data) => {
         });
     });
 };
+
+exports.tAccountFindOneAndUpdate = (query, update) => {
+    return new Promise((resolve, reject) => {
+        TAccount.findOneAndUpdate(query, update, { new: true }, (err, account) => {
+            if (err) {
+                return reject(Boom.badImplementation(err));
+            }
+            return resolve(account);
+        });
+    });
+};

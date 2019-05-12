@@ -13,6 +13,9 @@ exports.createAccounts = async (req, res, next) => {
                 debit: debit.debit
             }
             createdDebitedAccount = await queries.tAccountCreate(data);
+        } else {
+            let updatedDebitedAccount = await queries.tAccountFindOneAndUpdate({ header: debit.header }, { $set: { debit: debitedAccount.debit + debit.debit } });
+            createdDebitedAccount = updatedDebitedAccount;
         }
         let creditedAccount = await queries.tAccountFindOne({ header: credit.header });
         if (!creditedAccount) {
@@ -21,6 +24,9 @@ exports.createAccounts = async (req, res, next) => {
                 credit: credit.credit
             }
             createdCreditedAccount = await queries.tAccountCreate(data);
+        } else {
+            let updatedCreditedAccount = await queries.tAccountFindOneAndUpdate({ header: credit.header }, { $set: { credit: creditedAccount.credit + credit.credit } });
+            createdCreditedAccount = updatedCreditedAccount;
         }
         return res.json({
             data: {
