@@ -48,3 +48,14 @@ exports.tAccountFind = (query) => {
         });
     });
 };
+
+exports.tAccountRemove = (query) => {
+    return new Promise((resolve, reject) => {
+        TAccount.remove(query, (err, res) => {
+            if (err) {
+                return reject(Boom.badImplementation(err));
+            }
+            return resolve(res);
+        });
+    });
+};

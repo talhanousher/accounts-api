@@ -1,4 +1,24 @@
-let tAccountQueries = require('./t-account.tAccountQueries');
+let tAccountQueries = require('./t-account.queries');
+let tAccountsMessage = require('./t-accounts.messages');
+
+exports.getAllTAccounts = (req, res, next) => {
+    tAccountQueries.tAccountFind({})
+        .then(accounts => {
+            return res.json({
+                data: accounts,
+                success: true
+            })
+        })
+        .catch(err => {
+            return next(err);
+        });
+};
+
+exports.updateAccounts = (req, res) => {
+    return res.json({
+        message: tAccountsMessage.UPDATE_NOT_SUPPORTED
+    });
+};
 
 exports.createAccounts = async (req, res, next) => {
     let debit = req.body[0];
@@ -39,15 +59,15 @@ exports.createAccounts = async (req, res, next) => {
     }
 };
 
-exports.getAllTAccounts = (req, res, next) => {
-    tAccountQueries.tAccountFind({})
-        .then(accounts => {
+exports.deleteAccounts = (req, res, next) => {
+    tAccountQueries.tAccountRemove({})
+        .then(response => {
             return res.json({
-                data: accounts,
+                data: response,
                 success: true
             })
         })
         .catch(err => {
             return next(err);
-        });
+        })
 };
