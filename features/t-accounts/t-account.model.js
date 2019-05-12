@@ -18,4 +18,4 @@ let TAccount = Schema({
     }
 }, { timestamps: true });
 
-module.exports = mongoose.model('TAccount', TAccount);
+module.exports = mongoose.model('t-accounts', TAccount);
