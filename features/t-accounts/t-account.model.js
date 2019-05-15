@@ -4,17 +4,22 @@ let Schema = mongoose.Schema;
 let TAccount = Schema({
     header: {
         type: String,
-        require: true
+        required: true
     },
     debit: {
         type: Number,
-        require: true,
+        required: true,
         default: 0
     },
     credit: {
         type: Number,
-        require: true,
+        required: true,
         default: 0
+    },
+    type: {
+        type: String,
+        enum: ["asset", "liability", "owner-equity", "expense", "revenue"],
+        required: true
     }
 }, { timestamps: true });
 

@@ -7,6 +7,7 @@ let mongoose = require('mongoose');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+let generalEntriesRouter = require('./features/general-entries/general-entries.routes');
 let tAccountsRouter = require('./features/t-accounts/t-account.routes');
 let trialBalanceRouter = require('./features/trial-balance/trial-balance.routes');
 
@@ -30,9 +31,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/general/entry', generalEntriesRouter);
 app.use('/taccount', tAccountsRouter);
 app.use('/trial/balance', trialBalanceRouter);
 

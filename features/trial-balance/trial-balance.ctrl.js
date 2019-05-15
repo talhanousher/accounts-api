@@ -9,6 +9,7 @@ exports.getTrialBalance = (req, res, next) => {
                 let dataObject = {};
                 let account = accounts[i];
                 dataObject.accounttitle = account.header;
+                dataObject.type = account.type;
                 if ((account.debit - account.credit) > 0) {
                     dataObject.debit = account.debit - account.credit;
                 } else {

@@ -5,17 +5,22 @@ let TrialBalance = Schema({
     data: [{
         accounttitle: {
             type: String,
-            require: true
+            required: true
         },
         debit: {
             type: Number,
-            require: true,
-            default: null
+            required: true,
+            default: 0
         },
         credit: {
             type: Number,
-            require: true,
-            default: null
+            required: true,
+            default: 0
+        },
+        type: {
+            type: String,
+            enum: ["asset", "liability", "owner-equity", "expense", "revenue"],
+            required: true
         }
     }],
     total: {

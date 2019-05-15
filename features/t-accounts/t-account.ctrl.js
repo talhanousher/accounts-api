@@ -1,18 +1,19 @@
 let tAccountQueries = require('./t-account.queries');
+let generalEntriesQueries = require('../general-entries/general-entries.queries');
 let tAccountsMessage = require('./t-accounts.messages');
 
-exports.getAllTAccounts = (req, res, next) => {
-    tAccountQueries.tAccountFind({})
-        .then(accounts => {
-            return res.json({
-                data: accounts,
-                success: true
-            })
-        })
-        .catch(err => {
-            return next(err);
-        });
-};
+// exports.getAllTAccounts = (req, res, next) => {
+//     tAccountQueries.tAccountFind({})
+//         .then(accounts => {
+//             return res.json({
+//                 data: accounts,
+//                 success: true
+//             })
+//         })
+//         .catch(err => {
+//             return next(err);
+//         });
+// };
 
 exports.updateAccounts = (req, res) => {
     return res.json({
@@ -20,43 +21,35 @@ exports.updateAccounts = (req, res) => {
     });
 };
 
-exports.createAccounts = async (req, res, next) => {
-    let debit = req.body[0];
-    let credit = req.body[1];
-    let createdDebitedAccount;
-    let createdCreditedAccount
-    try {
-        let debitedAccount = await tAccountQueries.tAccountFindOne({ header: debit.header });
-        if (!debitedAccount) {
-            let data = {
-                header: debit.header,
-                debit: debit.debit
+exports.getAllTAccounts = async (req, res, next) => {
+    generalEntriesQueries.generalEntriesFind({})
+        .then(async generalEntries => {
+            for (let i = 0; i < generalEntries.length; i++) {
+                let generalEntry = generalEntries[i];
+                try {
+                    let tAccount = await tAccountQueries.tAccountFindOne({ header: generalEntry.header });
+                    if (tAccount) {
+                        await tAccountQueries.tAccountFindOneAndUpdate({ header: generalEntry.header }, { $set: { debit: tAccount.debit + generalEntry.debit, credit: tAccount.credit + generalEntry.credit } });
+                    } else {
+                        await tAccountQueries.tAccountCreate({ header: generalEntry.header, debit: generalEntry.debit, credit: generalEntry.credit, type: generalEntry.type });
+                    }
+                } catch (error) {
+                    return next(error);
+                };
             }
-            createdDebitedAccount = await tAccountQueries.tAccountCreate(data);
-        } else {
-            let updatedDebitedAccount = await tAccountQueries.tAccountFindOneAndUpdate({ header: debit.header }, { $set: { debit: debitedAccount.debit + debit.debit } });
-            createdDebitedAccount = updatedDebitedAccount;
-        }
-        let creditedAccount = await tAccountQueries.tAccountFindOne({ header: credit.header });
-        if (!creditedAccount) {
-            let data = {
-                header: credit.header,
-                credit: credit.credit
-            }
-            createdCreditedAccount = await tAccountQueries.tAccountCreate(data);
-        } else {
-            let updatedCreditedAccount = await tAccountQueries.tAccountFindOneAndUpdate({ header: credit.header }, { $set: { credit: creditedAccount.credit + credit.credit } });
-            createdCreditedAccount = updatedCreditedAccount;
-        }
-        return res.json({
-            data: {
-                createdDebitedAccount: createdDebitedAccount,
-                createdCreditedAccount: createdCreditedAccount
-            }
-        });
-    } catch (error) {
-        return next(error);
-    }
+            tAccountQueries.tAccountFind({})
+                .then(accounts => {
+                    return res.json({
+                        data: accounts
+                    });
+                })
+                .catch(err => {
+                    return next(err);
+                })
+        })
+        .catch(err => {
+            return next(err);
+        })
 };
 
 exports.deleteAccounts = (req, res, next) => {

@@ -6,3 +6,5 @@ let generalEntriesCtrl = require('./general-entries.ctrl');
 router.route('/')
     .get(generalEntriesCtrl.getGeneralEntries)
     .post(generalEntriesCtrl.createGeneralEntry);
+
+module.exports = router;      
