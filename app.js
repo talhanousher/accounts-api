@@ -10,6 +10,7 @@ var usersRouter = require('./routes/users');
 let generalEntriesRouter = require('./features/general-entries/general-entries.routes');
 let tAccountsRouter = require('./features/t-accounts/t-account.routes');
 let trialBalanceRouter = require('./features/trial-balance/trial-balance.routes');
+let incomeStatementRouter = require('./features/income-statement/income-statement.routes');
 
 var url = 'mongodb://localhost:27017';
 var connect = mongoose.connect(url);
@@ -37,6 +38,7 @@ app.use('/users', usersRouter);
 app.use('/general/entry', generalEntriesRouter);
 app.use('/t/accounts', tAccountsRouter);
 app.use('/trial/balance', trialBalanceRouter);
+app.use('/income/statement', incomeStatementRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

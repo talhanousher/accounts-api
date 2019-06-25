@@ -34,15 +34,34 @@ exports.getTrialBalance = (req, res, next) => {
                 data: data,
                 total: total
             }
-            trialBalanceQueries.trialBalanceCreate(trialBalance)
-                .then(createdTrialBalance => {
-                    return res.json({
-                        data: createdTrialBalance,
-                    });
+            trialBalanceQueries.trialBalanceFindOne({})
+                .then(foundTrialBalance => {
+                    if (!foundTrialBalance) {
+                        trialBalanceQueries.trialBalanceCreate(trialBalance)
+                            .then(createdTrialBalance => {
+                                return res.json({
+                                    data: createdTrialBalance,
+                                });
+                            })
+                            .catch(err => {
+                                return next(err);
+                            });
+                    } else {
+                        trialBalanceQueries.trialBalanceFindOneAndUpdate({}, { $set: { data: trialBalance.data, total: trialBalance.total } })
+                            .then(updatedTrialBalance => {
+                                return res.json({
+                                    data: updatedTrialBalance,
+                                });
+                            })
+                            .catch(err => {
+                                return next(err);
+                            });
+                    }
                 })
                 .catch(err => {
                     return next(err);
                 });
+
         })
         .catch(err => {
             return next(err);
